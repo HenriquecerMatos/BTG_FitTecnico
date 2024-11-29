@@ -1,0 +1,52 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BtgPactual.ViewModels"
+             x:Class="BtgPactual.Views.MainPage"
+             Title="Lista de Clientes">
+
+    <ContentPage.BindingContext>
+        <vm:ClientsViewModel />
+    </ContentPage.BindingContext>
+
+    <StackLayout Padding="10">
+        <!-- Botão para adicionar clientes -->
+        <Button Text="Adicionar Cliente"
+                Command="{Binding AddClienteCommand}" 
+                BackgroundColor="Green" 
+                TextColor="White" 
+                Margin="0,0,0,10" />
+
+        <!-- Tabela de clientes -->
+        <CollectionView ItemsSource="{Binding Clients}" SelectionMode="Single" 
+                        SelectedItem="{Binding SelectedClient}">
+            <CollectionView.Header>
+                <!-- Cabeçalho -->
+                <Grid ColumnDefinitions="*,*,*,Auto" Padding="5" BackgroundColor="LightGray">
+                    <Label Text="Nome Completo" FontAttributes="Bold" />                   
+                    <Label Text="Idade" FontAttributes="Bold" Grid.Column="1" />
+                    <Label Text="Ações" FontAttributes="Bold" Grid.Column="2" HorizontalOptions="End" />
+                </Grid>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="*,*,*,Auto" Padding="5">
+                        <Label Text="{Binding FullName}"   />                        
+                        <Label Text="{Binding Age}" Grid.Column="2" />
+                        <StackLayout Orientation="Horizontal" Grid.Column="3" HorizontalOptions="End">
+                            <!-- Botão para Editar -->
+                            <Button Text="Editar"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditClienteCommand}" 
+                                    CommandParameter="{Binding}" />
+                            <!-- Botão para Excluir -->
+                            <Button Text="Excluir"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteClienteCommand}" 
+                                    CommandParameter="{Binding}" 
+                                    BackgroundColor="Red" 
+                                    TextColor="White" />
+                        </StackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+</ContentPage>

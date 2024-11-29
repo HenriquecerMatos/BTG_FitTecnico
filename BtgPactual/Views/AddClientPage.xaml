@@ -1,0 +1,27 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BtgPactual.ViewModels"
+             x:Class="BtgPactual.Views.AddClientPage"
+             Title="Adcionar Cliente">
+
+    <ContentPage.BindingContext>
+        <vm:AddClientViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20">
+        <Entry Placeholder="Nome" Text="{Binding Name}" />
+        <Entry Placeholder="Sobrenome" Text="{Binding LastName}" />
+        <Entry Placeholder="Idade" Text="{Binding Age}" Keyboard="Numeric"  />
+        <Entry Placeholder="Endereco" Text="{Binding Address}" />
+
+        <Grid Margin="10" ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Text="Salvar" Command="{Binding SaveCommand}" Grid.Column="0" />
+            <Button Text="Cancelar" Command="{Binding CancelCommand}" Grid.Column="1" />
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>

@@ -23,7 +23,7 @@ public partial class MainPage : ContentPage
     /// <summary>
     /// Evento para desenhar o gráfico no SKCanvasView.
     /// </summary>
-    private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
+    public void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
     {
         var viewModel = BindingContext as MainViewModel;
         if (viewModel?.Prices == null || viewModel.Prices.Length == 0)
@@ -88,7 +88,7 @@ public partial class MainPage : ContentPage
     }
 
 
-    private void DrawScale(SKCanvas canvas, int width, int height, int margin,
+    public void DrawScale(SKCanvas canvas, int width, int height, int margin,
     double minPrice, double maxPrice, double[] prices, SKColor Color, int numYLabels = 5, int numXLabels = 5)
     {
         using (var textPaint = new SKPaint
@@ -146,7 +146,7 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void DrawGraph(SKCanvas canvas, double[] prices, float scaleX, float scaleY, int margin, int height, double minPrice, SKColor graphColor, int strokeWidth)
+    public void DrawGraph(SKCanvas canvas, double[] prices, float scaleX, float scaleY, int margin, int height, double minPrice, SKColor graphColor, int strokeWidth)
     {
         var linePaint = new SKPaint
         {
@@ -166,7 +166,7 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void DrawAxes(SKCanvas canvas, int width, int height, int margin)
+    public void DrawAxes(SKCanvas canvas, int width, int height, int margin)
     {
         var axisPaint = new SKPaint
         {
@@ -180,7 +180,7 @@ public partial class MainPage : ContentPage
         canvas.DrawLine(margin, margin, margin, height - margin, axisPaint); // Eixo Y
     }
 
-    private SKColor GetTextColorForBackground(SKColor backgroundColor)
+    public SKColor GetTextColorForBackground(SKColor backgroundColor)
     {
         // Calcular o brilho relativo usando a fórmula de luminância
         float brightness = (0.2126f * backgroundColor.Red + 0.7152f * backgroundColor.Green + 0.0722f * backgroundColor.Blue) / 255;

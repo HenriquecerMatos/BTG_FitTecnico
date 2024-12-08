@@ -71,25 +71,4 @@
 	  <ProjectReference Include="..\Applicability.Shared\Applicability.Shared.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Update="Views\DeleteClientPage.xaml.cs">
-	    <DependentUpon>DeleteClientPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\AddClientPage.xaml.cs">
-	    <DependentUpon>AddClientPage.xaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiXaml Update="Views\UpdateClientPage - Cópia.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\DeleteClientPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\AddClientPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	</ItemGroup>
-
 </Project>

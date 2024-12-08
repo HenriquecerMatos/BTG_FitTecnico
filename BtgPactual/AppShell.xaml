@@ -4,7 +4,4 @@
        x:Class="BtgPactual.AppShell">
 
     <ShellContent Title="Clientes" ContentTemplate="{DataTemplate views:MainPage}" />
-    <ShellContent Title="Cadastro" ContentTemplate="{DataTemplate views:AddClientPage}" />
-    <ShellContent Title="Cadastro" ContentTemplate="{DataTemplate views:UpdateClientPage}" />
-    <ShellContent Title="Cadastro" ContentTemplate="{DataTemplate views:DeleteClientPage}" />
 </Shell>

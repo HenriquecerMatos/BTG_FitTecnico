@@ -14,6 +14,8 @@ public partial class MainPage : ContentPage
         var viewModel = new MainViewModel();
         BindingContext = viewModel;
 
+        viewModel.SetColor();
+
         // Registra o SKCanvasView no ViewModel
         viewModel.SetCanvasView(canvasView);
     }
@@ -30,14 +32,21 @@ public partial class MainPage : ContentPage
         var canvas = e.Surface.Canvas;
 
         // Altura reservada para a escala
-        var scaleHeight = 50;
+        //var scaleHeight = 50;
 
         // Validar a cor de fundo
         SKColor backgroundColor;
-        if (!SKColor.TryParse(viewModel.BackgroundColor, out backgroundColor))
+        if (!SKColor.TryParse(viewModel.BackgroundColor.ValueHexa, out backgroundColor))
         {
             backgroundColor = SKColors.White; // Cor padrão
         }
+
+        SKColor graphicColor;
+        if (!SKColor.TryParse(viewModel.GraphicColor.ValueHexa, out graphicColor))
+        {
+            graphicColor = SKColors.Green; // Cor padrão
+        }
+
         canvas.Clear(backgroundColor);
 
         var prices = viewModel.Prices;
@@ -70,7 +79,7 @@ public partial class MainPage : ContentPage
             margin,
             height,
             minPrice,
-            SKColors.Green, //viewModel.GraphColor
+            graphicColor, //viewModel.GraphColor
             Math.Max(2, Math.Min(width, height) / 200)
         );
 
@@ -114,7 +123,7 @@ public partial class MainPage : ContentPage
         var gridPaint = new SKPaint
         {
             Style = SKPaintStyle.Stroke,
-            Color = SKColors.LightGray,// viewModel.GridColor,
+            Color = gridColor,// viewModel.GridColor,
             StrokeWidth = 1,
             IsAntialias = true,
             //PathEffect = SKPathEffect.CreateDash(new float[] { 10, 5 }, 0) // Linhas tracejadas
@@ -181,4 +190,19 @@ public partial class MainPage : ContentPage
         return brightness < 0.5f ? SKColors.White : SKColors.Black;
     }
 
+    private void OnSizeChanged(object sender, EventArgs e)
+    {
+        var viewModel = BindingContext as MainViewModel;
+        if (viewModel == null) return;
+
+        // Ajuste a largura e altura com base no tamanho disponível
+        double availableWidth = this.Width; // ou canvasView.Parent.Width
+        double availableHeight = this.Height; // ou canvasView.Parent.Height
+
+       
+
+        // Defina proporções para manter o canvas responsivo
+        viewModel.CanvasWidth = (availableWidth * 1) - 80; // 100% da largura disponível subtraído o peddin
+        viewModel.CanvasHeight = availableHeight * 0.6; // 60% da altura disponível
+    }
 }

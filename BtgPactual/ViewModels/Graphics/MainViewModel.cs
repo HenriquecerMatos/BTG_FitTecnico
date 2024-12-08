@@ -1,11 +1,20 @@
 ﻿using Applicability.Shared;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SkiaSharp;
 using SkiaSharp.Views.Maui.Controls;
+using System.Collections.ObjectModel;
 
 namespace BtgPactual.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
+    #region escala/dimencionamento de tela
+    [ObservableProperty]
+    private double _canvasWidth;
+
+    [ObservableProperty]
+    private double _canvasHeight;
+    #endregion
 
     #region configuração de leyout
     // Controla a visibilidade da área de configuração
@@ -15,16 +24,50 @@ public partial class MainViewModel : ObservableObject
     // Número de linhas do grid
 
     [ObservableProperty]
-    private int _gridLinesCount = 5;
-    // Cor de fundo do gráfico
-    [ObservableProperty]
-    private string _backgroundColor = "#000000";
-    // Cor do gráfico
-    [ObservableProperty]
-    private string _graphColor = "#00FF00"; 
+    private int _gridLinesCount = 8;
+    // Cor de fundo do gráfico  
 
-    // Lista de cores disponíveis para o Picker
-    public List<string> AvailableColors => new List<string> { "#FFFFFF", "#000000", "#0000FF", "#00FF00", "#FF0000", "#00FFFF" };
+
+    // Lista de cores disponíveis para o Picker   
+
+    public ObservableCollection<ColorDic> ColorDics
+    {
+        get
+        {
+            return new ObservableCollection<ColorDic>
+        {
+            new("Amarelo", "#FFFF00"),
+            new("Azul", "#0000FF"),
+            new("Branco", "#FFFFFF"),
+            new ("Cinza Claro", "#D3D3D3"),
+            new ("Cinza Escuro", "#A9A9A9"),
+            new ("Laranja", "#FFA500"),
+            new ("Marrom", "#8B4513"),
+            new ("Preto", "#000000"),
+            new ("Rosa", "#FFC0CB"),
+            new ("Verde", "#00FF00"),
+            new ("Vermelho", "#FF0000"),
+            new ("Violeta", "#8A2BE2")
+        };
+        }
+    }
+
+
+    [ObservableProperty]
+    private ColorDic _graphicColor = new("Branco", "#FFFFFF");
+    [ObservableProperty]
+    private ColorDic _backgroundColor = new("Preto", "#000000");
+
+    public class ColorDic
+    {
+        public string NameColor { get; set; }
+        public string ValueHexa { get; set; }
+        public ColorDic(string nameColor, string valueHexa)
+        {
+            NameColor = nameColor;
+            ValueHexa = valueHexa;
+        }
+    }
 
     // Texto do botão que alterna a área de configurações
     public string ConfigAreaButtonText => IsConfigAreaVisible ? "Fechar Configurações" : "Abrir Configurações";
@@ -36,6 +79,7 @@ public partial class MainViewModel : ObservableObject
     private void ToggleConfigArea()
     {
         IsConfigAreaVisible = !IsConfigAreaVisible;
+        OnPropertyChanged(nameof(ConfigAreaButtonText));
     }
 
     #endregion
@@ -79,36 +123,36 @@ public partial class MainViewModel : ObservableObject
         // Validações para garantir que os valores inseridos são positivos
         if (InitialPrice <= 0)
         {
-            
+
             await ShowErrorMessage("O preço inicial deve ser maior que zero.");
             return;
         }
 
         if (Volatility <= 0)
         {
-            
+
             await ShowErrorMessage("A volatilidade deve ser maior que zero.");
             return;
         }
 
         if (MeanReturn <= 0)
         {
-            
+
             await ShowErrorMessage("O retorno médio deve ser maior que zero.");
             return;
         }
 
         if (NumDays <= 0)
         {
-           
+
             await ShowErrorMessage("O número de dias deve ser maior que zero.");
             return;
         }
 
-        
+
         Prices = Graphics.GenerateBrownianMotion(Volatility, MeanReturn, InitialPrice, NumDays);
 
-        
+
         _canvasView?.InvalidateSurface();
     }
 
@@ -119,5 +163,11 @@ public partial class MainViewModel : ObservableObject
     {
         // Exibe um alerta de erro na interface do usuário
         await Application.Current.MainPage.DisplayAlert("Erro", message, "OK");
+    }
+
+    internal void SetColor()
+    {
+        GraphicColor = ColorDics.FirstOrDefault(c => c.NameColor.ToLower() == "verde");
+        BackgroundColor = ColorDics.FirstOrDefault(c => c.NameColor.ToLower() == "preto");
     }
 }

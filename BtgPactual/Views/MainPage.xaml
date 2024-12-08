@@ -1,59 +1,148 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-    <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:BtgPactual.ViewModels"
              xmlns:graphics="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
-             x:Class="BtgPactual.Views.MainPage">
+             xmlns:controls="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="BtgPactual.Views.MainPage"
+             SizeChanged="OnSizeChanged" 
+             Title="Movimento Browniano">
 
     <ContentPage.BindingContext>
         <viewModels:MainViewModel />
     </ContentPage.BindingContext>
 
     <ScrollView>
-        <VerticalStackLayout Padding="20">
-            <Entry Placeholder="Preço Inicial"
-           Text="{Binding InitialPrice, Mode=TwoWay}" Keyboard="Numeric" />
+        <VerticalStackLayout Padding="20" Spacing="15">
 
-            <Entry Placeholder="Volatilidade"
-           Text="{Binding Volatility, Mode=TwoWay}" Keyboard="Numeric" />
+            <!-- Título -->
+            <Label Text="Simulador de Movimento Browniano" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light='#333', Dark='#DDD'}" />
 
-            <Entry Placeholder="Retorno Médio"
-           Text="{Binding MeanReturn, Mode=TwoWay}" Keyboard="Numeric" />
+            <!-- Entrada de Dados -->
+            <Frame BorderColor="{AppThemeBinding Light='#DDD', Dark='#444'}" 
+                   CornerRadius="8" 
+                   Padding="15" 
+                   BackgroundColor="{AppThemeBinding Light='White', Dark='#222'}">
+                <VerticalStackLayout Spacing="10">
 
-            <Entry Placeholder="Número de Dias"
-           Text="{Binding NumDays, Mode=TwoWay}" Keyboard="Numeric" />
+                    <Label Text="Parâmetros de Entrada" 
+                           FontSize="20" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light='#555', Dark='#CCC'}" />
 
-            <Button Text="Gerar Gráfico" Command="{Binding GeneratePricesCommand}" />
+                    <Entry Placeholder="Preço Inicial"
+                           Text="{Binding InitialPrice, Mode=TwoWay}" 
+                           Keyboard="Numeric"
+                           PlaceholderColor="{AppThemeBinding Light='#888', Dark='#AAA'}"
+                           TextColor="{AppThemeBinding Light='#000', Dark='#FFF'}"
+                           BackgroundColor="{AppThemeBinding Light='#FFF', Dark='#333'}" />
 
-            <graphics:SKCanvasView x:Name="canvasView"
-                           PaintSurface="OnPaintSurface"
-                           WidthRequest="400"
-                           HeightRequest="300" />
+                    <Entry Placeholder="Volatilidade"
+                           Text="{Binding Volatility, Mode=TwoWay}" 
+                           Keyboard="Numeric"
+                           PlaceholderColor="{AppThemeBinding Light='#888', Dark='#AAA'}"
+                           TextColor="{AppThemeBinding Light='#000', Dark='#FFF'}"
+                           BackgroundColor="{AppThemeBinding Light='#FFF', Dark='#333'}" />
 
-            <!-- Botão para abrir/fechar a área de configuração -->
-            <Button Text="{Binding ConfigAreaButtonText}" Command="{Binding ToggleConfigAreaCommand}" />
+                    <Entry Placeholder="Retorno Médio"
+                           Text="{Binding MeanReturn, Mode=TwoWay}" 
+                           Keyboard="Numeric"
+                           PlaceholderColor="{AppThemeBinding Light='#888', Dark='#AAA'}"
+                           TextColor="{AppThemeBinding Light='#000', Dark='#FFF'}"
+                           BackgroundColor="{AppThemeBinding Light='#FFF', Dark='#333'}" />
 
+                    <Entry Placeholder="Número de Dias"
+                           Text="{Binding NumDays, Mode=TwoWay}" 
+                           Keyboard="Numeric"
+                           PlaceholderColor="{AppThemeBinding Light='#888', Dark='#AAA'}"
+                           TextColor="{AppThemeBinding Light='#000', Dark='#FFF'}"
+                           BackgroundColor="{AppThemeBinding Light='#FFF', Dark='#333'}" />
+
+                    <Button Text="Gerar Gráfico" 
+                            Command="{Binding GeneratePricesCommand}" 
+                            BackgroundColor="{AppThemeBinding Light='#007AFF', Dark='#005BBB'}" 
+                            TextColor="White"
+                            CornerRadius="8" 
+                            Padding="10" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Gráfico -->
+            <Frame BorderColor="{AppThemeBinding Light='#DDD', Dark='#444'}" 
+                   CornerRadius="8" 
+                   Padding="15" 
+                   BackgroundColor="{AppThemeBinding Light='White', Dark='#222'}">
+                <VerticalStackLayout Spacing="10">
+
+                    <Label Text="Gráfico Simulado" 
+                           FontSize="20" 
+                           FontAttributes="Bold" 
+                           TextColor="{AppThemeBinding Light='#555', Dark='#CCC'}" />
+
+                    <graphics:SKCanvasView x:Name="canvasView" 
+                                           PaintSurface="OnPaintSurface"
+                                           WidthRequest="{Binding CanvasWidth}" 
+                                           HeightRequest="{Binding CanvasHeight}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Botão para abrir/fechar área de configuração -->
+            <Button Text="{Binding ConfigAreaButtonText}" 
+                    Command="{Binding ToggleConfigAreaCommand}" 
+                    BackgroundColor="{AppThemeBinding Light='#34C759', Dark='#26A745'}" 
+                    TextColor="White"
+                    CornerRadius="8" 
+                    Padding="10" />
 
             <!-- Área de Configuração -->
-            <StackLayout IsVisible="{Binding IsConfigAreaVisible}">
-                <Label Text="Configurações de Gráfico" FontSize="20" HorizontalOptions="Center" />
+            <StackLayout IsVisible="{Binding IsConfigAreaVisible}" Spacing="15">
+                <Frame BorderColor="{AppThemeBinding Light='#DDD', Dark='#444'}" 
+                       CornerRadius="8" 
+                       Padding="15" 
+                       BackgroundColor="{AppThemeBinding Light='White', Dark='#222'}">
+                    <VerticalStackLayout Spacing="10">
 
-                <Slider  Minimum="2" Maximum="20" Value="{Binding GridLinesCount, Mode=TwoWay}" VerticalOptions="Center" />
-                
-                <Label 
-    Text="{Binding GridLinesCount}" 
-    VerticalOptions="Center" 
-    HorizontalOptions="Center" />
+                        <Label Text="Configurações de Gráfico" 
+                               FontSize="20" 
+                               FontAttributes="Bold" 
+                               TextColor="{AppThemeBinding Light='#555', Dark='#CCC'}" 
+                               HorizontalOptions="Center" />
 
-                <Picker SelectedItem="{Binding BackgroundColor}"
-                        ItemsSource="{Binding AvailableColors}"
-                        Title="Cor de Fundo" />
+                        <Label Text="Linhas de Grade" 
+                               FontSize="16" 
+                               TextColor="{AppThemeBinding Light='#666', Dark='#BBB'}" />
 
-                <Picker SelectedItem="{Binding GraphColor}"
-                        ItemsSource="{Binding AvailableColors}"
-                        Title="Cor do Gráfico" />
+                        <Slider Minimum="2" 
+                                Maximum="20" 
+                                Value="{Binding GridLinesCount, Mode=TwoWay}" />
+
+                        <Label Text="{Binding GridLinesCount}" 
+                               FontSize="14" 
+                               TextColor="{AppThemeBinding Light='#666', Dark='#BBB'}" 
+                               HorizontalOptions="Center" />
+
+                        <Label Text="Cores do Gráfico" 
+                               FontSize="16" 
+                               TextColor="{AppThemeBinding Light='#666', Dark='#BBB'}" />
+
+                        <Picker Title="Cor do fundo do gráfico" 
+                                ItemsSource="{Binding ColorDics}" 
+                                ItemDisplayBinding="{Binding NameColor}"
+                                BackgroundColor="{Binding BackgroundColor.ValueHexa}"
+                                SelectedItem="{Binding BackgroundColor}" />
+
+                        <Picker Title="Cor do gráfico" 
+                                ItemsSource="{Binding ColorDics}" 
+                                ItemDisplayBinding="{Binding NameColor}"
+                                BackgroundColor="{Binding GraphicColor.ValueHexa}"
+                                SelectedItem="{Binding GraphicColor}" />
+                    </VerticalStackLayout>
+                </Frame>
             </StackLayout>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

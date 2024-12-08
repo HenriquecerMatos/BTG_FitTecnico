@@ -34,6 +34,7 @@
         /// <para>en: Returns the customer's full name.</para>
         /// </summary>
         public string FullName { get { return Name + " " + LastName; } }
-      
+
     }
 }
+

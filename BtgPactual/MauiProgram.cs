@@ -1,5 +1,6 @@
 ﻿using BtgPactual.ViewModels;
 using Microsoft.Extensions.Logging;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace BtgPactual
 {
@@ -10,6 +11,7 @@ namespace BtgPactual
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseSkiaSharp()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -19,6 +21,7 @@ namespace BtgPactual
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
+            builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddSingleton<ClientsViewModel>();
             builder.Services.AddSingleton<UpdateClientViewModel>();
             builder.Services.AddSingleton<AddClientViewModel>();

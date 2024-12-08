@@ -21,7 +21,7 @@ public partial class MainPage : ContentPage
     }
 
     /// <summary>
-    /// Evento para desenhar o gráfico no SKCanvasView.
+    /// Evento para desenhar o gráfico com SKCanvasView
     /// </summary>
     public void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
     {
@@ -31,18 +31,13 @@ public partial class MainPage : ContentPage
 
         var canvas = e.Surface.Canvas;
 
-        // Altura reservada para a escala
-        //var scaleHeight = 50;
-
         // Validar a cor de fundo
-        SKColor backgroundColor;
-        if (!SKColor.TryParse(viewModel.BackgroundColor.ValueHexa, out backgroundColor))
+        if (!SKColor.TryParse(viewModel.BackgroundColor.ValueHexa, out SKColor backgroundColor))
         {
             backgroundColor = SKColors.White; // Cor padrão
         }
 
-        SKColor graphicColor;
-        if (!SKColor.TryParse(viewModel.GraphicColor.ValueHexa, out graphicColor))
+        if (!SKColor.TryParse(viewModel.GraphicColor.ValueHexa, out SKColor graphicColor))
         {
             graphicColor = SKColors.Green; // Cor padrão
         }
@@ -61,16 +56,16 @@ public partial class MainPage : ContentPage
         float scaleX = (width - 2 * margin) / (float)(prices.Length - 1);
         float scaleY = (height - 2 * margin) / (float)(maxPrice - minPrice);
 
-        // Desenhar o grid
+        // Desenha a grid
         DrawGrid(canvas, width, height, margin, viewModel.GridLinesCount, SKColors.LightGray);
 
-        // Desenhar os eixos
+        // Desenha os eixos
         DrawAxes(canvas, width, height, margin);
 
         // Determinar a cor do texto com base no brilho da cor de fundo
         SKColor textColor = GetTextColorForBackground(backgroundColor);
 
-        // Desenhar o gráfico
+        // Desenha o gráfico
         DrawGraph(
             canvas,
             prices,
@@ -79,7 +74,7 @@ public partial class MainPage : ContentPage
             margin,
             height,
             minPrice,
-            graphicColor, //viewModel.GraphColor
+            graphicColor,
             Math.Max(2, Math.Min(width, height) / 200)
         );
 
@@ -116,10 +111,19 @@ public partial class MainPage : ContentPage
         }
     }
 
+    /// <summary>
+    /// Desenha uma grade para ajudar a visualização dos dados
+    /// </summary>
+    /// <param name="canvas">canvas</param>
+    /// <param name="width">largura</param>
+    /// <param name="height">altura</param>
+    /// <param name="margin">margem</param>
+    /// <param name="gridLinesCount">quantidade de linhas, mesma quantidade na vertical e horizontal</param>
+    /// <param name="gridColor">Cor da grade/grid</param>
     private void DrawGrid(SKCanvas canvas, int width, int height, int margin, int gridLinesCount, SKColor gridColor)
     {
 
-        // Configuração do pincel para a grid
+        // Configuração da grid
         var gridPaint = new SKPaint
         {
             Style = SKPaintStyle.Stroke,
@@ -146,6 +150,19 @@ public partial class MainPage : ContentPage
         }
     }
 
+
+    /// <summary>
+    /// Desenha o gráfico com base nos preços
+    /// </summary>
+    /// <param name="canvas">Canvas</param>
+    /// <param name="prices">Lista de Preços</param>
+    /// <param name="scaleX">espaçamento X entre as marcações</param>
+    /// <param name="scaleY">espaçamento Y entre as marcações</param>
+    /// <param name="margin">Margem</param>
+    /// <param name="height">Altura</param>
+    /// <param name="minPrice">menor preço</param>
+    /// <param name="graphColor">cor do gráfico</param>
+    /// <param name="strokeWidth"> espessura da linha do gráfico</param>
     public void DrawGraph(SKCanvas canvas, double[] prices, float scaleX, float scaleY, int margin, int height, double minPrice, SKColor graphColor, int strokeWidth)
     {
         var linePaint = new SKPaint
@@ -166,6 +183,14 @@ public partial class MainPage : ContentPage
         }
     }
 
+
+    /// <summary>
+    /// Desenha os eixos X e Y do gráfico
+    /// </summary>
+    /// <param name="canvas"> Canvas</param>
+    /// <param name="width"> Largura</param>
+    /// <param name="height">Altura</param>
+    /// <param name="margin">Margem</param>
     public void DrawAxes(SKCanvas canvas, int width, int height, int margin)
     {
         var axisPaint = new SKPaint
@@ -180,29 +205,37 @@ public partial class MainPage : ContentPage
         canvas.DrawLine(margin, margin, margin, height - margin, axisPaint); // Eixo Y
     }
 
+
+    /// <summary>
+    /// retorna uma cor de acordo com a cor comparada, importante para trocar a cor de textos de acordo com a cor do fundo
+    /// </summary>
+    /// <param name="backgroundColor">Com de fundo</param>
+    /// <returns></returns>
     public SKColor GetTextColorForBackground(SKColor backgroundColor)
     {
         // Calcular o brilho relativo usando a fórmula de luminância
         float brightness = (0.2126f * backgroundColor.Red + 0.7152f * backgroundColor.Green + 0.0722f * backgroundColor.Blue) / 255;
 
-        // Se o brilho for baixo (fundo escuro), usa cor clara para o texto (branco)
-        // Caso contrário, use cor escura para o texto (preto)
+        // Se o brilho for baixo (fundo escuro), usa cor clara para o texto (branco) e virse versa
         return brightness < 0.5f ? SKColors.White : SKColors.Black;
     }
 
+    /// <summary>
+    /// Método chamado ao ter o tamanho da tela alterada 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void OnSizeChanged(object sender, EventArgs e)
     {
-        var viewModel = BindingContext as MainViewModel;
+        MainViewModel? viewModel = BindingContext as MainViewModel;
         if (viewModel == null) return;
 
-        // Ajuste a largura e altura com base no tamanho disponível
-        double availableWidth = this.Width; // ou canvasView.Parent.Width
-        double availableHeight = this.Height; // ou canvasView.Parent.Height
-
-       
+        // Ajusta a largura e altura com base no tamanho disponível
+        double availableWidth = this.Width; 
+        double availableHeight = this.Height;        
 
         // Defina proporções para manter o canvas responsivo
-        viewModel.CanvasWidth = (availableWidth * 1) - 80; // 100% da largura disponível subtraído o peddin
+        viewModel.CanvasWidth = (availableWidth * 1) - 80; // 100% da largura disponível subtraído o padding
         viewModel.CanvasHeight = availableHeight * 0.6; // 60% da altura disponível
     }
 }

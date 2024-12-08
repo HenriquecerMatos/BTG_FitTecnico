@@ -1,14 +1,13 @@
 ﻿using Applicability.Shared;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SkiaSharp;
 using SkiaSharp.Views.Maui.Controls;
 using System.Collections.ObjectModel;
 
 namespace BtgPactual.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
-    #region escala/dimencionamento de tela
+    #region escala/dimencionamento de tela/grafico
     [ObservableProperty]
     private double _canvasWidth;
 
@@ -22,19 +21,16 @@ public partial class MainViewModel : ObservableObject
     private bool _isConfigAreaVisible = false;
 
     // Número de linhas do grid
-
     [ObservableProperty]
     private int _gridLinesCount = 8;
-    // Cor de fundo do gráfico  
-
 
     // Lista de cores disponíveis para o Picker   
 
-    public ObservableCollection<ColorDic> ColorDics
+    public ObservableCollection<ColorDictionary> ColorDics
     {
         get
         {
-            return new ObservableCollection<ColorDic>
+            return new ObservableCollection<ColorDictionary>
         {
             new("Amarelo", "#FFFF00"),
             new("Azul", "#0000FF"),
@@ -52,28 +48,18 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-
+    // Cor do gráfico  
     [ObservableProperty]
-    private ColorDic _graphicColor = new("Branco", "#FFFFFF");
+    private ColorDictionary _graphicColor = new("Branco", "#FFFFFF");
+    // Cor de fundo do gráfico  
     [ObservableProperty]
-    private ColorDic _backgroundColor = new("Preto", "#000000");
-
-    public class ColorDic
-    {
-        public string NameColor { get; set; }
-        public string ValueHexa { get; set; }
-        public ColorDic(string nameColor, string valueHexa)
-        {
-            NameColor = nameColor;
-            ValueHexa = valueHexa;
-        }
-    }
+    private ColorDictionary _backgroundColor = new("Preto", "#000000");
 
     // Texto do botão que alterna a área de configurações
     public string ConfigAreaButtonText => IsConfigAreaVisible ? "Fechar Configurações" : "Abrir Configurações";
 
     /// <summary>
-    /// Comando para alternar a visibilidade da área de configuração.
+    /// Comando para alternar a visibilidade da área de configuração
     /// </summary>
     [RelayCommand]
     private void ToggleConfigArea()
@@ -84,11 +70,14 @@ public partial class MainViewModel : ObservableObject
 
     #endregion
 
+    /// <summary>
+    /// canvas responsavel pelo grafico 
+    /// </summary>
     private SKCanvasView _canvasView;
 
     /// <summary>
-    /// Método para registrar o SKCanvasView no ViewModel.
-    /// Necessário para forçar a atualização do gráfico.
+    /// Método para registrar o SKCanvasView no ViewModel
+    /// Necessário para forçar a atualização do gráfico
     /// </summary>
     public void SetCanvasView(SKCanvasView canvasView)
     {
@@ -102,20 +91,24 @@ public partial class MainViewModel : ObservableObject
         set => SetProperty(ref _prices, value);
     }
 
-    [ObservableProperty]
-    private double _initialPrice = 100; // Preço inicial padrão.
+    #region propriedades iniciais
 
+    // Preço inicial padrão
     [ObservableProperty]
-    private double _volatility = 0.02; // Volatilidade padrão.
-
+    private double _initialPrice = 100;
+    // Volatilidade padrão
     [ObservableProperty]
-    private double _meanReturn = 0.001; // Retorno médio padrão.
-
+    private double _volatility = 0.02;
+    // Retorno médio padrão
     [ObservableProperty]
-    private int _numDays = 100; // Número de dias padrão.
+    private double _meanReturn = 0.001;
+    // Número de dias padrão
+    [ObservableProperty]
+    private int _numDays = 100; 
+    #endregion
 
     /// <summary>
-    /// Comando para gerar os preços simulados e atualizar o gráfico.
+    /// Comando para gerar os preços simulados e atualizar o gráfico
     /// </summary>
     [RelayCommand]
     private async Task GeneratePrices()
@@ -157,7 +150,7 @@ public partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Exibe uma mensagem de erro para o usuário.
+    /// Exibe uma mensagem de erro para o usuário
     /// </summary>
     private async Task ShowErrorMessage(string message)
     {

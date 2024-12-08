@@ -16,7 +16,7 @@
         public static double[] GenerateBrownianMotion(double sigma, double mean, double initialPrice, int numDays)
         {
             // Inicializando o gerador de números aleatórios
-            Random random = new Random();
+            Random random = new ();
             double[] prices = new double[numDays];
             prices[0] = initialPrice;
 
